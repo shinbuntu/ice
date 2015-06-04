@@ -269,7 +269,23 @@
      * was fully handled.
      */
     handleEvent: function (e) {
-      if (!this.isTracking) return;
+      if (!this.isTracking) {
+        // Check if cursor is inside a change node
+        var rng = this.selection.getRangeAt(0);
+        var node = rng.commonAncestorContainer;
+        if (this.isInsideChange(node) && e.type == 'keydown') {
+          // if cursor is inside a change node and starting to type we want to move it outside the change node
+          // as tracking is turned off
+          // TODO: This only works with ice initialised in tinymce, would be good to make it work universally.
+          // Also it moves cursor to before element and not after
+          var tinymce_editor = tinyMCE.activeEditor;
+          var newNode = document.createTextNode('');
+          node.parentNode.parentNode.insertBefore(newNode, node.parentNode);
+          tinymce_editor.selection.select(newNode, true);
+          tinymce_editor.selection.collapse(false);
+        }
+        return;
+      }
       if (e.type == 'mouseup') {
         var self = this;
         setTimeout(function () {
