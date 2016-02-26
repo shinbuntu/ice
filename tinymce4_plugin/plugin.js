@@ -8,6 +8,7 @@
         // set this to false if you want the plugin to load ice.js, in which case you also need to define path_to_ice_js
         ice_loaded_externally: true,
         path_to_ice_js: '', // required if loading ice.js via plugin, i.e. ice_loaded_externally is false
+        url: null,
         deleteTag: 'span',
         insertTag: 'span',
         deleteClass: 'del',
@@ -45,6 +46,11 @@
          */
         init: function (ed, url) {
             var self = this, changeEditor = null;
+
+            tinymce.extend(self, ed.getParam('ice'));
+            if (self.url !== null) {
+                url = self.url;
+            }
 
             ed.handleEvents = function(e) {
                 if (ed.changeEditor !== undefined){
